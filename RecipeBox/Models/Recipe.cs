@@ -1,10 +1,17 @@
-namespace BestRestaurants.Models
+using System.Collections.Generic;
+
+namespace RecipeBox.Models
 {
-    public class Cuisine
+    public class Recipe
     {
-        public int CuisineId { get; set; }
-        public string Type { get; set; }
-        public int RestaurantId { get; set; }
-        public virtual Restaurant Restaurant { get; set; }
+        public Recipe()
+        {
+            this.JoinEntities = new HashSet<RecipeTag>();
+        }
+
+        public int RecipeId { get; set; }
+        public string Ingredients { get; set; }
+        public string Instruction { get; set; }
+        public virtual ICollection<RecipeTag> JoinEntities { get; }
     }
 }

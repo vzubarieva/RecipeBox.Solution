@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BestRestaurants.Models
+namespace RecipeBox.Models
 {
-    public class BestRestaurantsContext : DbContext
+    public class RecipeBoxContext : DbContext
     {
-        public DbSet<Restaurant> Restaurants { get; set; }
-        public DbSet<Cuisine> Cuisines { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<RecipeTag> RecipeTag { get; set; }
 
-        public BestRestaurantsContext(DbContextOptions options) : base(options) { }
+        public RecipeBoxContext(DbContextOptions options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 
-namespace BestRestaurants.Models
+namespace RecipeBox.Models
 {
-    public class Restaurant
+    public class Tag
     {
-        public Restaurant()
+        public Tag()
         {
-            this.Cuisines = new HashSet<Cuisine>();
+            this.JoinEntities = new HashSet<RecipeTag>();
         }
 
-        public int RestaurantId { get; set; }
-        public string Name { get; set; }
+        public int TagId { get; set; }
+        public string RecipeCategory { get; set; }
 
-        public int MichelinStars { get; set; }
-        public virtual ICollection<Cuisine> Cuisines { get; set; }
+        public virtual ICollection<RecipeTag> JoinEntities { get; set; }
     }
 }
