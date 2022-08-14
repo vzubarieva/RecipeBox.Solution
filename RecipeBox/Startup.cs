@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using BestRestaurants.Models;
 
-namespace BestRestaurants
+namespace RecipeBox
 {
     public class Startup
     {
@@ -25,7 +25,7 @@ namespace BestRestaurants
             services.AddMvc();
             services
                 .AddEntityFrameworkMySql()
-                //.AddDbContext<BestRestaurantsContext>(
+                .AddDbContext<RecipeBoxContext>(
                     options =>
                         options.UseMySql(
                             Configuration["ConnectionStrings:DefaultConnection"],
