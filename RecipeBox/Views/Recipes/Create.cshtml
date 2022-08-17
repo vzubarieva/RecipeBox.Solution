@@ -1,17 +1,22 @@
-@* @{
+@{
   Layout = "_Layout";
 }
 
-@model BestRestaurants.Models.Cuisine
+@model RecipeBox.Models.Recipe
 
-<h4>Add a new cuisine</h4>
+<h4>Add a new recipe</h4>
+
 @using (Html.BeginForm())
 {
-  @Html.LabelFor(model => model.Type)
-  @Html.TextBoxFor(model => model.Type)
+  @Html.LabelFor(model => model.RecipeName)
+  @Html.TextBoxFor(model => model.RecipeName)
+  @Html.LabelFor(model => model.Ingredients)
+  @Html.TextBoxFor(model => model.Ingredients)
+  @Html.LabelFor(model => model.Instruction)
+  @Html.TextBoxFor(model => model.Instruction)
+  @Html.Label("Select tag")
+  @Html.DropDownList("TagId")
 
-  @Html.LabelFor(model => model.Restaurant)
-  @Html.DropDownList("RestaurantId")
-  <input type="submit" value="Add new cuisine" />
+  <input type="submit" value="Add new recipe" class="btn btn-default" />
 }
-<p>@Html.ActionLink("Show all cuisines", "Index")</p> *@
+<p>@Html.ActionLink("Show all recipes", "Index")</p>

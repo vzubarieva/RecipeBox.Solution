@@ -1,12 +1,31 @@
-@* @{
+@{
   Layout = "_Layout";
-  }
+}
 
-  @model BestRestaurants.Models.Cuisine
+@model RecipeBox.Models.Recipe
 
-  <h2>Cuisine Details</h2>
-  <hr />
-  <h3>@Html.DisplayNameFor(model => model.Type): @Html.DisplayFor(model => model.Type)<h3>
-  <p>@Html.ActionLink("Back to list", "Index")</p>
-  <p>@Html.ActionLink("Edit Cuisine", "Edit", new { id = Model.CuisineId })</p>
-  <p>@Html.ActionLink("Delete Cuisine", "Delete", new { id = Model.CuisineId})</p> *@
+<h2>Recipe Details</h2>
+<hr />
+<h3>@Html.DisplayNameFor(model => model.RecipeName): @Html.DisplayFor(model => model.RecipeName)</h3>
+<h3>@Html.DisplayNameFor(model => model.Ingredients): @Html.DisplayFor(model => model.Ingredients)</h3>
+<h3>@Html.DisplayNameFor(model => model.Instruction): @Html.DisplayFor(model => model.Instruction)</h3>
+
+@if (@Model.JoinEntities.Count == 0)
+{
+  <p>This recipe does not belong to any tags</p>
+}
+else
+{
+  <h4>Tags this recipe belongs to:</h4>
+  <ul>
+    @foreach (var join in Model.JoinEntities)
+    {
+      <li>@join.Tag.RecipeCategory</li>
+    }
+  </ul>
+}
+
+<p>@Html.ActionLink("Back to list", "Index")</p>
+<p>@Html.ActionLink("Edit recipe", "Edit", new { id = Model.RecipeId })</p>
+<p>@Html.ActionLink("Delete recipe", "Delete", new { id = Model.RecipeId })</p>
+<p>@Html.ActionLink("Add a Tag", "AddTag", new { id = Model.RecipeId })</p>
