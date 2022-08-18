@@ -1,0 +1,34 @@
+@{
+  Layout = "_Layout";
+}
+
+@model RecipeBox.Models.Tag
+
+<h2>Recipe Details</h2>
+<hr />
+<h3>@Html.DisplayNameFor(model => model.RecipeCategory): @Html.DisplayFor(model => model.RecipeCategory)</h3>
+
+@if (@Model.JoinEntities.Count == 0)
+{
+  <p>This tag does not belong to any recipe</p>
+}
+else
+{
+  <h4>Recipe of this tag belongs to:</h4>
+  <ul>
+    @foreach (var join in Model.JoinEntities)
+    {
+      <li>@join.Recipe.RecipeName</li>
+      @using (Html.BeginForm("DeleteRecipe", "Tags"))
+      {
+        @Html.Hidden("joinId", @join.RecipeTagId)
+        <input type="submit" value="Delete" />
+      }
+    }
+  </ul>
+}
+
+<p>@Html.ActionLink("Back to list", "Index")</p>
+<p>@Html.ActionLink("Edit tag", "Edit", new { id = Model.TagId })</p>
+<p>@Html.ActionLink("Delete tag", "Delete", new { id = Model.TagId })</p>
+<p>@Html.ActionLink("Add a Recipe", "AddRecipe", new { id = Model.TagId })</p>

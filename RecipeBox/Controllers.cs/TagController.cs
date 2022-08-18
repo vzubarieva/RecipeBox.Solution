@@ -1,81 +1,113 @@
-// using Microsoft.AspNetCore.Mvc.Rendering;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.AspNetCore.Mvc;
-// using BestRestaurants.Models;
-// using System.Collections.Generic;
-// using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using RecipeBox.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-// namespace BestRestaurants.Controllers
-// {
-//     public class RestaurantsController : Controller
-//     {
-//         private readonly BestRestaurantsContext _db;
+namespace RecipeBox.Controllers
+{
+    public class TagsController : Controller
+    {
+        private readonly RecipeBoxContext _db;
 
-//         public RestaurantsController(BestRestaurantsContext db)
-//         {
-//             _db = db;
-//         }
+        public TagsController(RecipeBoxContext db)
+        {
+            _db = db;
+        }
 
-//         public ActionResult Index()
-//         {
-//             List<Restaurant> model = _db.Restaurants.ToList();
-//             return View(model);
-//         }
+        public ActionResult Index()
+        {
+            return View(_db.Tags.ToList());
+        }
 
-//         public ActionResult Create()
-//         {
-//             return View();
-//         }
+        public ActionResult Create()
+        {
+            ViewBag.RecipeId = new SelectList(_db.Recipes, "RecipeId", "RecipeName");
+            return View();
+        }
 
-//         [HttpPost]
-//         public ActionResult Create(Restaurant restaurant)
-//         {
-//             _db.Restaurants.Add(restaurant);
-//             _db.SaveChanges();
-//             return RedirectToAction("Index");
-//         }
+        [HttpPost]
+        public ActionResult Create(Tag tag, int RecipeId)
+        {
+            _db.Tags.Add(tag);
+            _db.SaveChanges();
+            if (RecipeId != 0)
+            {
+                _db.RecipeTag.Add(new RecipeTag() { RecipeId = RecipeId, TagId = tag.TagId });
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
 
-//         public ActionResult Details(int id)
-//         {
-//             Restaurant thisRestaurant = _db.Restaurants.FirstOrDefault(
-//                 restaurant => restaurant.RestaurantId == id
-//             );
-//             return View(thisRestaurant);
-//         }
+        public ActionResult Details(int id)
+        {
+            var thisTag = _db.Tags
+                .Include(tag => tag.JoinEntities)
+                .ThenInclude(join => join.Recipe)
+                .FirstOrDefault(tag => tag.TagId == id);
+            return View(thisTag);
+        }
 
-//         public ActionResult Edit(int id)
-//         {
-//             var thisRestaurant = _db.Restaurants.FirstOrDefault(
-//                 restaurant => restaurant.RestaurantId == id
-//             );
-//             return View(thisRestaurant);
-//         }
+        public ActionResult Edit(int id)
+        {
+            var thisTag = _db.Tags.FirstOrDefault(tag => tag.TagId == id);
+            ViewBag.RecipeId = new SelectList(_db.Recipes, "RecipeId", "RecipeName");
+            return View(thisTag);
+        }
 
-//         [HttpPost]
-//         public ActionResult Edit(Restaurant restaurant)
-//         {
-//             _db.Entry(restaurant).State = EntityState.Modified;
-//             _db.SaveChanges();
-//             return RedirectToAction("Index");
-//         }
+        [HttpPost]
+        public ActionResult Edit(Tag tag, int RecipeId)
+        {
+            if (RecipeId != 0)
+            {
+                _db.RecipeTag.Add(new RecipeTag() { RecipeId = RecipeId, TagId = tag.TagId });
+            }
+            _db.Entry(tag).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
-//         public ActionResult Delete(int id)
-//         {
-//             var thisRestaurant = _db.Restaurants.FirstOrDefault(
-//                 restaurant => restaurant.RestaurantId == id
-//             );
-//             return View(thisRestaurant);
-//         }
+        public ActionResult AddRecipe(int id)
+        {
+            var thisTag = _db.Tags.FirstOrDefault(tag => tag.TagId == id);
+            ViewBag.RecipeId = new SelectList(_db.Recipes, "RecipeId", "RecipeName");
+            return View(thisTag);
+        }
 
-//         [HttpPost, ActionName("Delete")]
-//         public ActionResult DeleteConfirmed(int id)
-//         {
-//             var thisRestaurant = _db.Restaurants.FirstOrDefault(
-//                 restaurant => restaurant.RestaurantId == id
-//             );
-//             _db.Restaurants.Remove(thisRestaurant);
-//             _db.SaveChanges();
-//             return RedirectToAction("Index");
-//         }
-//     }
-// }
+        [HttpPost]
+        public ActionResult AddRecipe(Tag tag, int RecipeId)
+        {
+            if (RecipeId != 0)
+            {
+                _db.RecipeTag.Add(new RecipeTag() { RecipeId = RecipeId, TagId = tag.TagId });
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var thisTag = _db.Tags.FirstOrDefault(tag => tag.TagId == id);
+            return View(thisTag);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var thisTag = _db.Tags.FirstOrDefault(tag => tag.TagId == id);
+            _db.Tags.Remove(thisTag);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult DeleteRecipe(int joinId)
+        {
+            var joinEntry = _db.RecipeTag.FirstOrDefault(entry => entry.RecipeTagId == joinId);
+            _db.RecipeTag.Remove(joinEntry);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
+}
