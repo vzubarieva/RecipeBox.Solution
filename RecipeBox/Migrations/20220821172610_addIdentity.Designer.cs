@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeBox.Models;
 
 namespace RecipeBox.Migrations
 {
     [DbContext(typeof(RecipeBoxContext))]
-    partial class RecipeBoxContextModelSnapshot : ModelSnapshot
+    [Migration("20220821172610_addIdentity")]
+    partial class addIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,12 +226,7 @@ namespace RecipeBox.Migrations
                     b.Property<string>("RecipeName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
                     b.HasKey("RecipeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Recipes");
                 });
@@ -318,15 +315,6 @@ namespace RecipeBox.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("RecipeBox.Models.Recipe", b =>
-                {
-                    b.HasOne("RecipeBox.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RecipeBox.Models.RecipeTag", b =>
