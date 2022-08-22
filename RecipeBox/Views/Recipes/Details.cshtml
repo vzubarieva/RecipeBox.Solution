@@ -31,6 +31,10 @@ else
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
-<p>@Html.ActionLink("Edit recipe", "Edit", new { id = Model.RecipeId })</p>
-<p>@Html.ActionLink("Delete recipe", "Delete", new { id = Model.RecipeId })</p>
+@if (@ViewBag.isOwner)
+{
+  <p>@Html.ActionLink("Edit recipe", "Edit", new { id = Model.RecipeId })</p>
+  <p>@Html.ActionLink("Delete recipe", "Delete", new { id = Model.RecipeId })</p>
+}
+
 <p>@Html.ActionLink("Add a Tag", "AddTag", new { id = Model.RecipeId })</p>

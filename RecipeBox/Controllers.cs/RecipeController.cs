@@ -8,29 +8,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace RecipeBox.Controllers
 {
-    [Authorize]
     public class RecipesController : Controller
     {
         private readonly RecipeBoxContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger _logger;
 
-        public RecipesController(UserManager<ApplicationUser> userManager, RecipeBoxContext db)
+        public RecipesController(
+            UserManager<ApplicationUser> userManager,
+            RecipeBoxContext db,
+            ILogger<RecipesController> logger
+        )
         {
             _userManager = userManager;
             _db = db;
+            _logger = logger;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currentUser = await _userManager.FindByIdAsync(userId);
-            var userRecipes = _db.Recipes.Where(entry => entry.User.Id == currentUser.Id).ToList();
-            return View(userRecipes);
+            var recipes = _db.Recipes.ToList();
+            _logger.LogInformation("recipes Index() method");
+
+            return View(recipes);
         }
 
+        [Authorize]
         public ActionResult Create()
         {
             ViewBag.TagId = new SelectList(_db.Tags, "TagId", "RecipeCategory");
@@ -40,44 +47,69 @@ namespace RecipeBox.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Recipe recipe, int TagId)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //find value of currently logged-in user.
             var currentUser = await _userManager.FindByIdAsync(userId);
-            recipe.User = currentUser;
-            _db.Recipes.Add(recipe);
-            _db.SaveChanges();
+            recipe.User = currentUser; //associate current user to recipe's user property.
+            _db.Recipes.Add(recipe); //adds recipes to the RecipesDbSet
+            _db.SaveChanges(); //save changes to database object called DB or _db
             if (TagId != 0)
             {
                 _db.RecipeTag.Add(new RecipeTag() { TagId = TagId, RecipeId = recipe.RecipeId });
             }
             _db.SaveChanges();
             return RedirectToAction("Index");
-        }
+        } //Add() is a method we run on our DBSet property of our DBContext, while SaveChanges() is a method we run on the DBContext itself.
 
-        public ActionResult Details(int id)
+        //Together, they update the DBSet and then sync those changes to the database which the DBContext represents.
+
+        public async Task<ActionResult> Details(int id)
         {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //find value of currently logged-in user.
+            var currentUser = await _userManager.FindByIdAsync(userId);
+
             var thisRecipe = _db.Recipes
                 .Include(recipe => recipe.JoinEntities)
                 .ThenInclude(join => join.Tag)
                 .FirstOrDefault(recipe => recipe.RecipeId == id);
+
+            ViewBag.isOwner = thisRecipe.UserId == currentUser.Id;
+
             return View(thisRecipe);
         }
 
+        [Authorize]
         public ActionResult Edit(int id)
         {
-            var thisRecipe = _db.Recipes.FirstOrDefault(recipe => recipe.RecipeId == id);
+            var thisRecipe = _db.Recipes
+                .Include(recipe => recipe.User)
+                .FirstOrDefault(recipe => recipe.RecipeId == id);
             ViewBag.TagId = new SelectList(_db.Tags, "TagId", "RecipeCategory");
+
             return View(thisRecipe);
         }
 
+        [Authorize]
         [HttpPost]
-        public ActionResult Edit(Recipe recipe, int TagId)
+        public async Task<ActionResult> Edit(Recipe recipe, int TagId)
         {
-            if (TagId != 0)
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //find value of currently logged-in user.
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            _logger.LogInformation("-----------");
+            _logger.LogInformation(recipe.UserId);
+            _logger.LogInformation(currentUser.Id);
+
+            if (recipe.UserId == currentUser.Id)
             {
-                _db.RecipeTag.Add(new RecipeTag() { TagId = TagId, RecipeId = recipe.RecipeId });
+                if (TagId != 0)
+                {
+                    _db.RecipeTag.Add(
+                        new RecipeTag() { TagId = TagId, RecipeId = recipe.RecipeId }
+                    );
+                }
+                _db.Entry(recipe).State = EntityState.Modified;
+                _db.SaveChanges();
             }
-            _db.Entry(recipe).State = EntityState.Modified;
-            _db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 

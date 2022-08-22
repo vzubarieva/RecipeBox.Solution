@@ -6,11 +6,13 @@
 
 <h2>Edit</h2>
 
-<h4>Edit this recipe: @Html.DisplayFor(model => model.RecipeName)</h4>
+<h4>Edit this recipe: @Html.DisplayFor(model => model.RecipeName). created by @Html.DisplayFor(model => model.UserId)
+</h4>
 
 @using (Html.BeginForm())
 {
   @Html.HiddenFor(model => model.RecipeId)
+  @Html.HiddenFor(model => model.UserId)
 
   @Html.LabelFor(model => model.RecipeName)
   @Html.EditorFor(model => model.RecipeName)

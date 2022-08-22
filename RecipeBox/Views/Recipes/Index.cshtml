@@ -9,16 +9,16 @@
 
 @if (Model.Any())
 {
-  <ul>
+    <ul>
     @foreach (Recipe recipe in Model)
     {
-      <li>@Html.ActionLink($"{recipe.RecipeName}", "Details", new { id = recipe.RecipeId })</li>
+          <li>@Html.ActionLink($"{recipe.RecipeName}", "Details", new { id = recipe.RecipeId })</li>
     }
-  </ul>
+    </ul>
 }
 else
 {
-  <h3>No recipes have been added yet!</h3>
+    <h3>No recipes have been added yet!</h3>
 }
 
 <p>@Html.ActionLink("Add new recipe", "Create")</p>

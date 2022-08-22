@@ -1,5 +1,6 @@
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace RecipeBox
 {
@@ -11,6 +12,13 @@ namespace RecipeBox
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
+                .ConfigureLogging(
+                    logBuilder =>
+                    {
+                        logBuilder.ClearProviders(); // removes all providers from LoggerFactory
+                        logBuilder.AddConsole();
+                    }
+                )
                 .UseStartup<Startup>()
                 .Build();
 
