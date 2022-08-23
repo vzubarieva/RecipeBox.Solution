@@ -72,7 +72,7 @@ namespace RecipeBox.Controllers
                 .ThenInclude(join => join.Tag)
                 .FirstOrDefault(recipe => recipe.RecipeId == id);
 
-            ViewBag.isOwner = thisRecipe.UserId == currentUser.Id;
+            ViewBag.isOwner = thisRecipe.UserId == currentUser?.Id;
 
             return View(thisRecipe);
         }
