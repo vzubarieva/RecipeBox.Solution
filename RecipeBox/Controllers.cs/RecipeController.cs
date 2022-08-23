@@ -29,11 +29,16 @@ namespace RecipeBox.Controllers
             _logger = logger;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
-            var recipes = _db.Recipes.ToList();
             _logger.LogInformation("recipes Index() method");
+            ViewBag.CurrentFilter = searchString;
+            var recipes = from s in _db.Recipes select s;
 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                recipes = recipes.Where(s => s.Ingredients.Contains(searchString));
+            }
             return View(recipes);
         }
 

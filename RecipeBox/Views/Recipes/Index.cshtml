@@ -9,10 +9,16 @@
 
 @if (Model.Any())
 {
+  @using (Html.BeginForm())  
+{  
+    <p>Search By Ingredient : @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)    
+        <input type="submit" value="Search" /></p>  
+} 
     <ul>
     @foreach (Recipe recipe in Model)
     {
           <li>@Html.ActionLink($"{recipe.RecipeName}", "Details", new { id = recipe.RecipeId })</li>
+          
     }
     </ul>
 }
