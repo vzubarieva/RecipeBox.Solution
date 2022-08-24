@@ -5,28 +5,29 @@
 @using RecipeBox.Models;
 @model IEnumerable<RecipeBox.Models.Recipe>
 
-<h1>Items for @User.Identity.Name</h1>
+<h1>Recipes for @User.Identity.Name</h1>
 
 @if (Model.Any())
 {
-  @using (Html.BeginForm())  
-{  
-    <p>Search By Ingredient : @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)    
-        <input type="submit" value="Search" /></p>  
-} 
-    <ul>
+  @using (Html.BeginForm())
+  {
+    <p>Search By Ingredient : @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+      <input type="submit" value="Search" />
+    </p>
+  }
+  <ul class="list-group list-group-flush">
     @foreach (Recipe recipe in Model)
     {
-          <li>@Html.ActionLink($"{recipe.RecipeName}", "Details", new { id = recipe.RecipeId })</li>
-          
+      <li class="list-group-item">@Html.ActionLink($"{recipe.RecipeName}", "Details", new { id = recipe.RecipeId })</li>
     }
-    </ul>
+  </ul>
 }
 else
 {
-    <h3>No recipes have been added yet!</h3>
+  <h3>No recipes have been added yet!</h3>
 }
+<div class="hstack gap-3 pt-3 mt-3 border-top border-dark">
+  <p>@Html.ActionLink("Add new recipe", "Create")</p>
 
-<p>@Html.ActionLink("Add new recipe", "Create")</p>
-
-<p>@Html.ActionLink("Home", "Index", "Home")</p>
+  <p>@Html.ActionLink("Home", "Index", "Home")</p>
+</div>

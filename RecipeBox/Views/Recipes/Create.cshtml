@@ -8,16 +8,30 @@
 
 @using (Html.BeginForm())
 {
-  @Html.LabelFor(model => model.RecipeName)
-  @Html.TextBoxFor(model => model.RecipeName)
-  @Html.LabelFor(model => model.Ingredients)
-  @Html.TextBoxFor(model => model.Ingredients)
-  @Html.LabelFor(model => model.Instruction)
-  @Html.TextBoxFor(model => model.Instruction)
+  <div class="input-group input-group-sm mb-3">
+    <span class="input-group-text" id="inputGroup-sizing-sm">@Html.LabelFor(model => model.RecipeName)
+    </span>
+    @Html.TextBoxFor(m => m.RecipeName, new{@class = "form-control"})
+  </div>
 
-  @Html.Label("Select tag")
-  @Html.DropDownList("TagId")
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="inputGroup-sizing-default">@Html.LabelFor(model => model.Ingredients)
+    </span>
+    <input type="text" class="form-control" aria-label="Sizing example input"
+    aria-describedby="inputGroup-sizing-default">
+  </div>
 
-  <input type="submit" value="Add new recipe" class="btn btn-default" />
+  <div class="input-group input-group-lg mb-3">
+    <span class="input-group-text" id="inputGroup-sizing-lg">@Html.LabelFor(model => model.Instruction)
+    </span>
+    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+  </div>
+
+  <div class="input-group input-group-lg mb-3">
+    <span class="input-group-text" id="inputGroup-sizing-lg">@Html.Label("Select tag") </span>
+    @Html.DropDownList("TagId", (IEnumerable<SelectListItem>)@ViewBag.TagId, "Category", new{@class = "form-select"})
+  </div>
+
+  <button type="submit" class="btn btn-info">Add new recipe</button>
 }
 <p>@Html.ActionLink("Show all recipes", "Index")</p>

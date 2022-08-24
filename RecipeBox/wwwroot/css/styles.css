@@ -1,0 +1,11 @@
+.container {
+  text-align: left; 
+  padding: 50px;
+  margin: auto;
+}
+
+body {
+  background: no-repeat url("/img/background.jpg");
+  background-color: #cccccc
+}
+
