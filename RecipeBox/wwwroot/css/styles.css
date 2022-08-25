@@ -2,10 +2,11 @@
   text-align: left; 
   padding: 50px;
   margin: auto;
+  background: rgba(0, 0, 0, 0.40);
 }
 
 body {
-  background: no-repeat url("/img/background.jpg");
-  background-color: #cccccc
+  background: #000 url("/img/background.jpg") no-repeat fixed center;
+  background-size: cover;
 }
 

@@ -31,10 +31,13 @@ else
     }
   </ul>
 }
-
-<p>@Html.ActionLink("Back to list", "Index")</p>
+<div class="hstack gap-3 pt-3 mt-3 border-top border-dark">
+  <p>@Html.ActionLink("Back to list", "Index")</p>
+</div>
 @if (@ViewBag.isOwner)
 {
-  <p>@Html.ActionLink("Edit recipe", "Edit", new { id = Model.RecipeId })</p>
-  <p>@Html.ActionLink("Delete recipe", "Delete", new { id = Model.RecipeId })</p>
+  <div class="hstack gap-3 pt-3 mt-3 border-top border-dark">
+    <p>@Html.ActionLink("Edit recipe", "Edit", new { id = Model.RecipeId })</p>
+    <p>@Html.ActionLink("Delete recipe", "Delete", new { id = Model.RecipeId })</p>
+  </div>
 }
